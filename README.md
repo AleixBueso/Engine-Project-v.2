@@ -1,11 +1,11 @@
 
-# V_Engine
+# EngineProject v.2
 
-A simple game engine developed by Vulpem.     
+A simple game engine developed by AleixBueso.     
 This has been created for learning purposes, during 2016 at the CITM university.   
 
 Source code can be found at:        
-https://github.com/Vulpem/V_Engine/
+https://github.com/AleixBueso/EngineProject_v.2/
 
 ## Usage
 
@@ -54,7 +54,7 @@ imported other files, try to add it back and refresh.
 
 ## LICENSE
 
- Copyright 2016 David Hernandez
+ Copyright 2016 Aleix Bueso
 
    Licensed under the Apache License, Version 2.0 (the "License");    
    you may not use this file except in compliance with the License.    
