@@ -20,6 +20,7 @@ public:
 		C_Texture,
 		C_camera,
 		C_Billboard,
+		C_Particle_Emitter,
 
 		//Keep this "C_None" always last
 		C_None

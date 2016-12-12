@@ -97,6 +97,7 @@
     <ClInclude Include="Globals.h" />
     <ClInclude Include="Mesh_RenderInfo.h" />
     <ClInclude Include="ModuleResourceManager.h" />
+    <ClInclude Include="Particle Emitter.h" />
     <ClInclude Include="PerfTimer.h" />
     <ClInclude Include="PugiXml\src\pugiconfig.hpp" />
     <ClInclude Include="PugiXml\src\pugixml.hpp" />
@@ -257,6 +258,7 @@
     <ClCompile Include="ModuleEditor.cpp" />
     <ClCompile Include="ModuleResourceManager.cpp" />
     <ClCompile Include="ModuleWindow.cpp" />
+    <ClCompile Include="Particle Emitter.cpp" />
     <ClCompile Include="PerfTimer.cpp" />
     <ClCompile Include="PhysBody3D.cpp" />
     <ClCompile Include="Primitive.cpp" />
