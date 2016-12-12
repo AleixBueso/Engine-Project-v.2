@@ -42,6 +42,9 @@ return ret;
 
 bool ModuleEditor::Start()
 {
+	ImGuiIO& io = ImGui::GetIO();
+	io.Fonts->AddFontFromFileTTF("futur.ttf", 13);
+
 	ImGui_ImplSdlGL3_NewFrame(App->window->GetWindow());
 
 	//Initializing the strings used to test the editor
