@@ -8,7 +8,7 @@ class Particle_Emitter :public Component
 public:
 	Particle_Emitter(GameObject* linkedTo);
 
-	void UpdateNow(const float3& point, const float3& _up);
+	void UpdateNow();
 
 	void EditorContent();
 

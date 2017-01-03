@@ -168,6 +168,11 @@ void GameObject::DrawOnEditor()
 			{
 				AddComponent(Component::Type::C_Billboard);
 			}
+
+			if (ImGui::MenuItem("Particle Emmiter##add"))
+			{
+				AddComponent(Component::Type::C_Particle_Emitter);
+			}
 		}
 		ImGui::EndPopup();
 	}
@@ -442,6 +447,14 @@ Component* GameObject::AddComponent(Component::Type type, std::string res, bool 
 		if (HasComponent(Component::C_Billboard) == false)
 		{
 			toAdd = new Billboard(this);
+		}
+		break;
+	}
+	case Component::Type::C_Particle_Emitter:
+	{
+		if (HasComponent(Component::C_Particle_Emitter) == false)
+		{
+			toAdd = new Particle_Emitter(this);
 		}
 		break;
 	}

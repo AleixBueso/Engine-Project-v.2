@@ -8,5 +8,6 @@
 #include "Transform.h"
 #include "Camera.h"
 #include "Billboard.h"
+#include "Particle Emitter.h"
 
 #endif

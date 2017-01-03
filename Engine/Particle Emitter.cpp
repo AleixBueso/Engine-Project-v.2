@@ -5,6 +5,7 @@
 #include "Application.h"
 
 #include "imGUI\imgui.h"
+#include "OpenGL.h"
 
 Particle_Emitter::Particle_Emitter(GameObject* linkedTo) : Component(linkedTo, C_Particle_Emitter)
 {
@@ -13,20 +14,22 @@ Particle_Emitter::Particle_Emitter(GameObject* linkedTo) : Component(linkedTo, C
 	name = tmp;
 }
 
-void Particle_Emitter::UpdateNow(const float3& point, const float3& _up)
+void Particle_Emitter::UpdateNow()
 {
 	/*if (_up.IsZero() == false)
 	{
 		Transform* trans = object->GetTransform();
 		float3 front = point - trans->GetGlobalPos();
 
-		float4x4 tmp = float4x4::LookAt(localForward.Normalized(), front, localUp.Normalized(), _up);
+		float4x4 tmp = float4x4::LookAt(object localForward.Normalized(), front, localUp.Normalized(), _up);
 		trans->SetGlobalRot(tmp.ToEulerXYZ() * RADTODEG);
 	}
 	else
 	{
 		object->GetTransform()->LookAt(point);
 	}*/
+	
+	glRectd(0, 0, 5, 5);
 }
 
 void Particle_Emitter::EditorContent()
