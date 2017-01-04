@@ -42,8 +42,8 @@ return ret;
 
 bool ModuleEditor::Start()
 {
-	ImGuiIO& io = ImGui::GetIO();
-	io.Fonts->AddFontFromFileTTF("futur.ttf", 13);
+	/*ImGuiIO& io = ImGui::GetIO();
+	io.Fonts->AddFontFromFileTTF("Roboto-Thin.ttf", 13);*/
 
 	ImGui_ImplSdlGL3_NewFrame(App->window->GetWindow());
 

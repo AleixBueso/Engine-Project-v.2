@@ -29,7 +29,19 @@ void Particle_Emitter::UpdateNow()
 		object->GetTransform()->LookAt(point);
 	}*/
 	
-	glRectd(0, 0, 5, 5);
+	glPushMatrix();
+	glMultMatrixf(object->GetTransform()->GetGlobalTransform().ptr());
+	glBegin(GL_QUADS); // 2x2 pixels
+	glVertex3f(-1.0f, 1.0f, 0);
+	glVertex3f(-1.0f, -1.0f, 0);
+	glVertex3f(1.0f, -1.0f, 0);
+	glVertex3f(1.0f, 1.0f, 0);
+	glEnd();
+
+	if (object->HasComponent(Component::C_material))
+		glTexParameteri(GL_TEXTURE, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+
+	glPopMatrix();
 }
 
 void Particle_Emitter::EditorContent()
