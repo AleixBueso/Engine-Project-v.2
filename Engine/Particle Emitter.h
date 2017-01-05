@@ -15,8 +15,9 @@ public:
 	void SaveSpecifics(pugi::xml_node& myNode);
 	void LoadSpecifics(pugi::xml_node& myNode);
 
-	static Type GetType() { return Type::C_Particle_Emitter; }
+	void DrawTexture();
 
+	static Type GetType() { return Type::C_Particle_Emitter; }
 };
 
 #endif

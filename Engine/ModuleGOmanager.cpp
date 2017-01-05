@@ -229,6 +229,15 @@ GameObject* ModuleGoManager::CreateCamera(const char* name)
 	return camera;
 }
 
+GameObject* ModuleGoManager::CreateParticleEmitter(const char* name)
+{
+	GameObject* particle_emitter = CreateEmpty(name);
+	particle_emitter->AddComponent(Component::Type::C_Particle_Emitter);
+	particle_emitter->AddComponent(Component::Type::C_Billboard);
+	particle_emitter->AddComponent(Component::Type::C_material);
+	return particle_emitter;
+}
+
 GameObject * ModuleGoManager::DuplicateGO(GameObject * toCopy)
 {
 	GameObject* ret = new GameObject();

@@ -2,6 +2,7 @@
 
 #include "GameObject.h"
 #include "Application.h"
+#include "AllComponents.h"
 
 #include "R_Material.h"
 
@@ -42,6 +43,9 @@ void Material::EditorContent()
 	{
 		ImGui::OpenPopup("Add New Texture");
 	}
+
+	if (object->HasComponent(Component::Type::C_Particle_Emitter) == false)
+	{
 	ImGui::Text("Blend type:");
 	int alphaType = GetAlphaType();
 	int prevAlphaType = alphaType;
@@ -88,6 +92,8 @@ void Material::EditorContent()
 			}
 		}
 	}
+	}
+
 
 	R_Material* matRes = ReadRes<R_Material>();
 

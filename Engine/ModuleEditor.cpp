@@ -348,6 +348,11 @@ update_status ModuleEditor::MenuBar()
 			{
 				App->GO->CreateCamera();
 			}
+			if (ImGui::MenuItem("Particle Emitter##CreateEmitter") == true)
+			{
+				App->GO->CreateParticleEmitter("Particle Emitter");
+			}
+
 			ImGui::EndMenu();
 		}
 		if (ImGui::BeginMenu("Documentation"))

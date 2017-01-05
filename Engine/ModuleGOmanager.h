@@ -43,6 +43,8 @@ public:
 	GameObject* CreateEmpty(const char* name = NULL);
 	//Create a gameobject with just a Camera attached to it
 	GameObject* CreateCamera(const char* name = NULL);
+	//Create a gameobject with Billboard, Particle emmiter and material attached
+	GameObject* CreateParticleEmitter(const char* name = NULL);
 	//Create a copy of the passed GO
 	GameObject* DuplicateGO(GameObject* toCopy);
 
