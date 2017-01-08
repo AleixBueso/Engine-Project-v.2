@@ -128,6 +128,18 @@ update_status ModuleGoManager::Update()
 		StaticChildsPopUpIsOpen = false;
 	}
 
+	//Update Fireworks
+	std::list<Firework*>::iterator it = fireworks.begin();
+	while (it != fireworks.end())
+	{
+		(*it)->Update();
+		it++;
+	}
+
+	//Create Fireworks
+	if (App->input->GetKey(SDL_SCANCODE_1) == KEY_DOWN)
+		fireworks.push_back(new Firework());
+
 	return UPDATE_CONTINUE;
 }
 

@@ -2,6 +2,8 @@
 #define __PARTICLE_EMITTER__
 
 #include "ResourcedComponent.h"
+#include "Firework.h"
+#include <list>
 
 class Particle_Emitter :public Component
 {

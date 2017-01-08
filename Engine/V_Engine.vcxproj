@@ -92,6 +92,7 @@
     <ClInclude Include="Devil\include\ilut_config.h" />
     <ClInclude Include="Devil\include\ilu_region.h" />
     <ClInclude Include="Devil\include\il_wrap.h" />
+    <ClInclude Include="Firework.h" />
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="GlobalFunctions.h" />
     <ClInclude Include="Globals.h" />
@@ -204,6 +205,7 @@
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Color.cpp" />
     <ClCompile Include="Component.cpp" />
+    <ClCompile Include="Firework.cpp" />
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="GlobalFunctions.cpp" />
     <ClCompile Include="imGUI\imgui.cpp" />

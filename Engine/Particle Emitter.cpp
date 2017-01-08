@@ -4,9 +4,15 @@
 #include "Transform.h"
 #include "Application.h"
 #include "ModuleImporter.h"
+#include "Camera.h"
+#include "ModuleInput.h"
+
+#include "Firework.h"
 
 #include "imGUI\imgui.h"
 #include "OpenGL.h"
+
+// Guide: http://r3dux.org/2010/10/how-to-create-a-simple-fireworks-effect-in-opengl-and-sdl/
 
 Particle_Emitter::Particle_Emitter(GameObject* linkedTo) : Component(linkedTo, C_Particle_Emitter)
 {
@@ -31,20 +37,14 @@ void Particle_Emitter::UpdateNow()
 	}*/
 
 	DrawTexture();
-
-	counter += 0.001f;
-
-	if (counter >= 5)
-		counter = 0;
-
-	glPopMatrix();
+	
 }
 
 void Particle_Emitter::EditorContent()
 {
-	ImGui::DragFloat("Speed: ", &counter, 0.001f, 0, 5);
-	ImGui::DragFloat("Alpha: ", &alpha, 0.01f, 0, 1);
-	ImGui::DragFloat("Blending: ", &blending_over_time, 0.01f, 0, 1);
+		ImGui::DragFloat("Speed: ", &counter, 0.001f, 0, 5);
+		ImGui::DragFloat("Alpha: ", &alpha, 0.01f, 0, 1);
+		ImGui::DragFloat("Blending: ", &blending_over_time, 0.01f, 0, 1);
 }
 
 void Particle_Emitter::SaveSpecifics(pugi::xml_node& myNode)
@@ -57,10 +57,6 @@ void Particle_Emitter::LoadSpecifics(pugi::xml_node & myNode)
 
 void Particle_Emitter::DrawTexture()
 {
-
-	glPushMatrix();
-	glMultMatrixf(object->GetTransform()->GetGlobalTransform().ptr());
-	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 
 	// Blending
 	//glEnable(GL_BLEND);
@@ -75,19 +71,19 @@ void Particle_Emitter::DrawTexture()
 
 	// Bottom right
 	glTexCoord2f(1.0f, 1.0f);
-	glVertex2f(1.0f + counter, -1.0f + counter);
+	glVertex2f(0.2f, -0.2f + counter);
 
 	// Top right
 	glTexCoord2f(1.0f, 0.0f);
-	glVertex2f(1.0f + counter, 1.0f + counter);
+	glVertex2f(0.2f, 0.2f + counter);
 
 	// Top left
 	glTexCoord2f(0.0f, 0.0f);
-	glVertex2f(-1.0f + counter, 1.0f + counter);
+	glVertex2f(-0.2f, 0.2f + counter);
 
 	// Bottom left
 	glTexCoord2f(0.0f, 1.0f);
-	glVertex2f(-1.0f + counter, -1.0f + counter);
+	glVertex2f(-0.2f, -0.2f + counter);
 
 	glEnd();
 
@@ -97,4 +93,5 @@ void Particle_Emitter::DrawTexture()
 	//glDisable(GL_BLEND);
 	glDisable(GL_ALPHA_TEST);
 
+	counter += 0.001f;
 }

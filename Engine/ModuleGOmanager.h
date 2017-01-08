@@ -9,6 +9,7 @@
 #include <stack>
 #include <map>
 #include "QuadTree.h"
+#include "Firework.h"
 
 #include "GameObject.h"
 
@@ -33,6 +34,9 @@ public:
 	void Render(const viewPort& port);
 
 	bool CleanUp();
+
+	// Firework system
+	std::list<Firework*> fireworks;
 
 
 	// ----------------------- GO Management ------------------------------------------------------
