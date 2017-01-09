@@ -4,6 +4,29 @@
 #include "ResourcedComponent.h"
 #include "Firework.h"
 #include <list>
+class Particle_Emitter;
+
+class Particle
+{
+public:
+
+	float timer;
+	float speed;
+	float pos;
+	float max_life;
+	float size;
+
+	bool to_destroy = false;
+
+	Particle_Emitter* emitter;
+	
+	Particle(Particle_Emitter* _emitter);
+
+	void Update();
+
+private:
+
+};
 
 class Particle_Emitter :public Component
 {
@@ -25,6 +48,9 @@ public:
 	float speed = 0.001f;
 	float alpha = 0;
 	float blending_over_time = 1;
+	float timer = 0;
+
+	std::list<Particle*> particles;
 };
 
 #endif

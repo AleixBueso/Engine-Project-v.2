@@ -43,4 +43,5 @@ void Billboard::SaveSpecifics(pugi::xml_node& myNode)
 
 void Billboard::LoadSpecifics(pugi::xml_node & myNode)
 {
+
 }

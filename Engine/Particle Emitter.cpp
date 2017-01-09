@@ -23,20 +23,24 @@ Particle_Emitter::Particle_Emitter(GameObject* linkedTo) : Component(linkedTo, C
 
 void Particle_Emitter::UpdateNow()
 {
-	/*if (_up.IsZero() == false)
-	{
-		Transform* trans = object->GetTransform();
-		float3 front = point - trans->GetGlobalPos();
-
-		float4x4 tmp = float4x4::LookAt(object localForward.Normalized(), front, localUp.Normalized(), _up);
-		trans->SetGlobalRot(tmp.ToEulerXYZ() * RADTODEG);
-	}
-	else
-	{
-		object->GetTransform()->LookAt(point);
-	}*/
-
 	DrawTexture();
+
+	if (timer < 1)
+	{
+		particles.push_back(new Particle(this));
+		timer = 2;
+	}
+
+	std::list<Particle*>::iterator it = particles.begin();
+	while (it != particles.end())
+	{
+		if ((*it)->to_destroy)
+			it = particles.erase(it);
+		else
+			it++;
+	}
+
+	timer += Time.dt;
 	
 }
 
@@ -57,6 +61,24 @@ void Particle_Emitter::LoadSpecifics(pugi::xml_node & myNode)
 
 void Particle_Emitter::DrawTexture()
 {
+	for (std::list<Particle*>::iterator it = particles.begin(); it != particles.end(); it++)
+		(*it)->Update();
+}
+
+Particle::Particle(Particle_Emitter* _emitter)
+{
+	emitter = _emitter;
+	timer = 0;
+	speed = 0.001f;
+	pos = 0;
+	max_life = 2.5f;
+	size = 1;
+}
+
+void Particle::Update()
+{
+	if (to_destroy)
+		//delete[] this;
 
 	// Blending
 	//glEnable(GL_BLEND);
@@ -65,33 +87,42 @@ void Particle_Emitter::DrawTexture()
 
 	//Alpha
 	glEnable(GL_ALPHA_TEST);
-	glAlphaFunc(GL_GREATER, alpha);
-
+	glAlphaFunc(GL_GREATER, emitter->alpha);
+	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+	glMultMatrixf(emitter->object->GetTransform()->GetGlobalTransform().ptr());
 	glBegin(GL_QUADS);
 
 	// Bottom right
 	glTexCoord2f(1.0f, 1.0f);
-	glVertex2f(0.2f, -0.2f + counter);
+	glVertex2f(0.2f, pos - 0.2f);
 
 	// Top right
 	glTexCoord2f(1.0f, 0.0f);
-	glVertex2f(0.2f, 0.2f + counter);
+	glVertex2f(0.2f, pos + 0.2f);
 
 	// Top left
 	glTexCoord2f(0.0f, 0.0f);
-	glVertex2f(-0.2f, 0.2f + counter);
+	glVertex2f(-0.2f, pos + 0.2f);
 
 	// Bottom left
 	glTexCoord2f(0.0f, 1.0f);
-	glVertex2f(-0.2f, -0.2f + counter);
+	glVertex2f(-0.2f, pos - 0.2f);
 
 	glEnd();
 
-	if (object->HasComponent(Component::C_material))
+	if (emitter->object->HasComponent(Component::C_material))
 		glTexParameteri(GL_TEXTURE, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 
 	//glDisable(GL_BLEND);
 	glDisable(GL_ALPHA_TEST);
+	glPopMatrix();
 
-	counter += 0.001f;
+	timer += Time.dt/10;
+
+	//pos += speed;
+
+	if (timer > max_life)
+	{
+		to_destroy = true;
+	}
 }
