@@ -245,7 +245,6 @@ GameObject* ModuleGoManager::CreateParticleEmitter(const char* name)
 {
 	GameObject* particle_emitter = CreateEmpty(name);
 	particle_emitter->AddComponent(Component::Type::C_Particle_Emitter);
-	particle_emitter->AddComponent(Component::Type::C_Billboard);
 	particle_emitter->AddComponent(Component::Type::C_material);
 	return particle_emitter;
 }

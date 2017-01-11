@@ -16,6 +16,10 @@ public:
 	float max_life;
 	float size;
 
+	uint particle_tex = 0;
+
+	math::float4x4 transformation = math::float4x4::identity;
+
 	bool to_destroy = false;
 
 	Particle_Emitter* emitter;
