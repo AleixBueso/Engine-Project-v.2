@@ -24,9 +24,13 @@ Particle_Emitter::Particle_Emitter(GameObject* linkedTo) : Component(linkedTo, C
 	name = tmp;
 }
 
-void Particle_Emitter::UpdateNow()
+void Particle_Emitter::UpdateNow(const float3& point, const float3& _up)
 {
-	DrawTexture();
+	for (std::list<Particle*>::iterator it = particles.begin(); it != particles.end(); it++)
+	{
+		//(*it)->transform->Update();
+		(*it)->Update(point, _up);
+	}
 
 	if (timer > 3)
 	{
@@ -64,14 +68,12 @@ void Particle_Emitter::LoadSpecifics(pugi::xml_node & myNode)
 
 void Particle_Emitter::DrawTexture()
 {
-	for (std::list<Particle*>::iterator it = particles.begin(); it != particles.end(); it++)
-	{
-		(*it)->Update();
-	}
+
 }
 
 Particle::Particle(Particle_Emitter* _emitter)
 {
+	transform = new Transform(nullptr);
 	emitter = _emitter;
 	timer = 0;
 	speed = 0.001f;
@@ -80,7 +82,7 @@ Particle::Particle(Particle_Emitter* _emitter)
 	size = 1;
 }
 
-void Particle::Update()
+void Particle::Update(const float3& point, const float3& _up)
 {
 	if (to_destroy)
 		delete[] this;
@@ -90,29 +92,39 @@ void Particle::Update()
 	//glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	//glBlendColor(GL_CONSTANT_COLOR, GL_CONSTANT_COLOR, GL_CONSTANT_COLOR, 0);
 
-	/*if (App->GO->.IsZero() == false)
+	if (_up.IsZero() == false)
 	{
-		Transform* trans = object->GetTransform();
+		Transform* trans = transform;
 		float3 front = point - trans->GetGlobalPos();
 
 		float4x4 tmp = float4x4::LookAt(localForward.Normalized(), front, localUp.Normalized(), _up);
 		trans->SetGlobalRot(tmp.ToEulerXYZ() * RADTODEG);
+		transform->UpdateGlobalTransform();
 	}
 	else
-	{*/
-	 float4x4 tmp = transformation.LookAt(emitter->object->GetTransform()->GetGlobalPos(), App->camera->GetDefaultCam()->object->GetTransform()->GetGlobalPos(), float3(1, 0, 0), float3(0, 1, 0), float3(0, 1, 0));
-	 transformation.SetRotatePartX(tmp.ToEulerXYZ().x * RADTODEG);
-	 transformation.SetRotatePartY(tmp.ToEulerXYZ().y * RADTODEG);
-	 transformation.SetRotatePartZ(tmp.ToEulerXYZ().z * RADTODEG);
+	{
+		transform->LookAt(point);
+	}
+	
+
+
+	/*float3 front = App->camera->GetDefaultCam()->object->GetTransform()->GetGlobalPos() - emitter->object->GetTransform()->GetGlobalPos();
+	 float4x4 tmp = transformation.LookAt(float3(1,0,0), front, float3(0, 1, 0), float3(0, 1, 0));
+	 float3 rotation = tmp.ToEulerXYX() * RADTODEG;
+
+	 while (rotation.x < 0) { rotation.x += 360; }
+	 while (rotation.y < 0) { rotation.y += 360; }
+	 while (rotation.z < 0) { rotation.z += 360; }
+	 transformation = math::Quat::FromEulerXYX(rotation.x, rotation.y, rotation.z);
 	 //float4x4 tmp = transformation.Translate(float3(2, 0, 3));
 	 //transformation = tmp;
 	//}
-
+	*/
 	//Alpha
 	glEnable(GL_ALPHA_TEST);
 	glAlphaFunc(GL_GREATER, emitter->alpha);
 	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
-	glMultMatrixf(transformation.ptr());
+	glMultMatrixf(transform->GetGlobalTransform().ptr());
 
 	glBegin(GL_TRIANGLES);
 

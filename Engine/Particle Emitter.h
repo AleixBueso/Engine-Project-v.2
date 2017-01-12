@@ -2,6 +2,7 @@
 #define __PARTICLE_EMITTER__
 
 #include "ResourcedComponent.h"
+#include "Transform.h"
 #include "Firework.h"
 #include <list>
 class Particle_Emitter;
@@ -18,7 +19,10 @@ public:
 
 	uint particle_tex = 0;
 
-	math::float4x4 transformation = math::float4x4::identity;
+	float3 localForward = float3(0, 0, 1);
+	float3 localUp = float3(0, 1, 0);
+
+	Transform* transform;
 
 	bool to_destroy = false;
 
@@ -26,7 +30,7 @@ public:
 	
 	Particle(Particle_Emitter* _emitter);
 
-	void Update();
+	void Update(const float3& point, const float3& _up);
 
 private:
 
@@ -37,7 +41,7 @@ class Particle_Emitter :public Component
 public:
 	Particle_Emitter(GameObject* linkedTo);
 
-	void UpdateNow();
+	void UpdateNow(const float3& point, const float3& _up);
 
 	void EditorContent();
 

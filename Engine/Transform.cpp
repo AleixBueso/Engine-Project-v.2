@@ -161,16 +161,22 @@ math::float4x4 Transform::GetLocalTransformMatrix()
 
 void Transform::UpdateGlobalTransform()
 {
-	if (object->parent != nullptr && object->parent->HasComponent(Component::Type::C_transform) == true)
+	if (object)
 	{
-		Transform* parent = object->parent->GetTransform();
-		
-		globalTransform = GetLocalTransformMatrix() * parent->GetGlobalTransform();
+		if (object->parent != nullptr && object->parent->HasComponent(Component::Type::C_transform) == true)
+		{
+			Transform* parent = object->parent->GetTransform();
+
+			globalTransform = GetLocalTransformMatrix() * parent->GetGlobalTransform();
+		}
+		else
+		{
+			globalTransform = GetLocalTransformMatrix();
+		}
 	}
+
 	else
-	{
 		globalTransform = GetLocalTransformMatrix();
-	}
 }
 
 math::float4x4 Transform::GetGlobalTransform()
@@ -255,19 +261,37 @@ math::float3 Transform::GetGlobalPos()
 
 void Transform::SetLocalRot(float x, float y, float z)
 {
-	if (object->IsStatic() == false && allowRotation)
+	if (object)
 	{
-		while (x < 0) { x += 360; }
-		while (y < 0) { y += 360; }
-		while (z < 0) { z += 360; }
+		if (object->IsStatic() == false && allowRotation)
+		{
+			while (x < 0) { x += 360; }
+			while (y < 0) { y += 360; }
+			while (z < 0) { z += 360; }
 
-		x *= DEGTORAD;
-		y *= DEGTORAD;
-		z *= DEGTORAD;
+			x *= DEGTORAD;
+			y *= DEGTORAD;
+			z *= DEGTORAD;
 
-		localRotation = math::Quat::FromEulerXYZ(x, y, z);
+			localRotation = math::Quat::FromEulerXYZ(x, y, z);
 
-		object->UpdateTransformMatrix();
+			object->UpdateTransformMatrix();
+		}
+	}
+
+	else
+	{
+			while (x < 0) { x += 360; }
+			while (y < 0) { y += 360; }
+			while (z < 0) { z += 360; }
+
+			x *= DEGTORAD;
+			y *= DEGTORAD;
+			z *= DEGTORAD;
+
+			localRotation = math::Quat::FromEulerXYZ(x, y, z);
+
+			UpdateGlobalTransform();
 	}
 }
 
@@ -302,31 +326,37 @@ math::float3 Transform::GetLocalRot()
 
 void Transform::SetGlobalRot(float x, float y, float z)
 {
-	if (object->IsStatic() == false && allowRotation)
+	if (object)
 	{
-		if (object->parent != nullptr && object->parent->HasComponent(Component::Type::C_transform) == true)
+		if (object->IsStatic() == false && allowRotation)
 		{
-			//TODO
-			//Needs cleaning
-			x *= DEGTORAD;
-			y *= DEGTORAD;
-			z *= DEGTORAD;
+			if (object->parent != nullptr && object->parent->HasComponent(Component::Type::C_transform) == true)
+			{
+				//TODO
+				//Needs cleaning
+				x *= DEGTORAD;
+				y *= DEGTORAD;
+				z *= DEGTORAD;
 
-			Transform* parentTrans = object->parent->GetTransform();
+				Transform* parentTrans = object->parent->GetTransform();
 
-			float4x4 localMat = (float4x4::FromTRS(GetGlobalPos(), float3x3::FromEulerXYZ(x, y, z), GetGlobalScale())).Transposed() * parentTrans->GetGlobalTransform().Inverted();
-			localMat.Transposed();
+				float4x4 localMat = (float4x4::FromTRS(GetGlobalPos(), float3x3::FromEulerXYZ(x, y, z), GetGlobalScale())).Transposed() * parentTrans->GetGlobalTransform().Inverted();
+				localMat.Transposed();
 
-			float3 localEuler = localMat.ToEulerXYZ();
-			localEuler *= RADTODEG;
+				float3 localEuler = localMat.ToEulerXYZ();
+				localEuler *= RADTODEG;
 
-			SetLocalRot(localEuler.x, localEuler.y, localEuler.z);
-		}
-		else
-		{
-			SetLocalRot(x, y, z);
+				SetLocalRot(localEuler.x, localEuler.y, localEuler.z);
+			}
+			else
+			{
+				SetLocalRot(x, y, z);
+			}
 		}
 	}
+
+	else
+		SetLocalRot(x, y, z);
 }
 
 void Transform::SetGlobalRot(float3 rotation)

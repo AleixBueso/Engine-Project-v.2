@@ -628,7 +628,7 @@ void ModuleGoManager::RenderGOs(const viewPort & port, const std::vector<GameObj
 				if (comp->second->object->HasComponent(Component::Type::C_Particle_Emitter))
 				{
 					Transform* camTransform = port.camera->object->GetTransform();
-					comp->second->object->GetComponent<Particle_Emitter>().front()->UpdateNow();
+					comp->second->object->GetComponent<Particle_Emitter>().front()->UpdateNow(camTransform->GetGlobalPos(), camTransform->Up());
 				}
 			}
 		}
