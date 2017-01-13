@@ -192,24 +192,34 @@ void Transform::UpdateEditorValues()
 
 void Transform::SetLocalPos(float x, float y, float z)
 {
-	if (object->IsStatic() == false)
+	if (object)
+	{
+		if (object->IsStatic() == false)
+		{
+			localPosition.x = x;
+			localPosition.y = y;
+			localPosition.z = z;
+
+			object->UpdateTransformMatrix();
+
+			if (object->HasComponent(Component::Type::C_camera))
+			{
+				std::vector<Camera*> cams = object->GetComponent<Camera>();
+				std::vector<Camera*>::iterator it = cams.begin();
+				while (it != cams.end())
+				{
+					(*it)->UpdatePos();
+					it++;
+				}
+			}
+		}
+	}
+
+	else
 	{
 		localPosition.x = x;
 		localPosition.y = y;
 		localPosition.z = z;
-
-		object->UpdateTransformMatrix();
-
-		if (object->HasComponent(Component::Type::C_camera))
-		{
-			std::vector<Camera*> cams = object->GetComponent<Camera>();
-			std::vector<Camera*>::iterator it = cams.begin();
-			while (it != cams.end())
-			{
-				(*it)->UpdatePos();
-				it++;
-			}
-		}
 	}
 }
 
@@ -225,26 +235,33 @@ math::float3 Transform::GetLocalPos()
 
 void Transform::SetGlobalPos(float x, float y, float z)
 {
-	if (object->IsStatic() == false)
+	if (object)
 	{
-		if (object->parent != nullptr && object->parent->HasComponent(Component::Type::C_transform) == true)
+		if (object->IsStatic() == false)
 		{
-			//TODO
-			//Needs cleaning
-			Transform* parentTrans = object->parent->GetTransform();
+			if (object->parent != nullptr && object->parent->HasComponent(Component::Type::C_transform) == true)
+			{
+				//TODO
+				//Needs cleaning
+				Transform* parentTrans = object->parent->GetTransform();
 
-			float4x4 myGlobal = (float4x4::FromTRS(float3(x, y, z), GetGlobalRotQuat(), GetGlobalScale()));
-			float4x4 parentGlobal = parentTrans->GetGlobalTransform();
+				float4x4 myGlobal = (float4x4::FromTRS(float3(x, y, z), GetGlobalRotQuat(), GetGlobalScale()));
+				float4x4 parentGlobal = parentTrans->GetGlobalTransform();
 
-			float4x4 localMat = myGlobal.Transposed() * parentGlobal.Inverted();
-			localMat.Transpose();
+				float4x4 localMat = myGlobal.Transposed() * parentGlobal.Inverted();
+				localMat.Transpose();
 
-			SetLocalPos(localMat.TranslatePart().x, localMat.TranslatePart().y, localMat.TranslatePart().z);
+				SetLocalPos(localMat.TranslatePart().x, localMat.TranslatePart().y, localMat.TranslatePart().z);
+			}
+			else
+			{
+				SetLocalPos(x, y, z);
+			}
 		}
-		else
-		{
-			SetLocalPos(x, y, z);
-		}
+	}
+	else
+	{
+		SetLocalPos(x, y, z);
 	}
 }
 
