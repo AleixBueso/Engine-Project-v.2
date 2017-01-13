@@ -3,8 +3,10 @@
 
 #include "ResourcedComponent.h"
 #include "Transform.h"
-#include "Firework.h"
+//#include "Firework.h"
+#include "Particle Emitter.h"
 #include <list>
+
 class Particle_Emitter;
 
 class Particle
@@ -16,6 +18,8 @@ public:
 	float max_life;
 	float size;
 	float3 direction;
+
+	bool is_firework = false;
 
 	uint particle_tex = 0;
 
@@ -40,7 +44,7 @@ private:
 class Particle_Emitter :public Component
 {
 public:
-	Particle_Emitter(GameObject* linkedTo);
+	Particle_Emitter(GameObject* linkedTo, bool IsFirework = false);
 
 	void UpdateNow(const float3& point, const float3& _up);
 
@@ -59,6 +63,13 @@ public:
 	float gravity[3];
 
 	std::list<Particle*> particles;
+
+	// Firework System
+	bool is_firework = false;
+	bool first_particle_launch = false;
+	bool exploded = false;
+	bool explosion_created = false;
+	float3 explosion_pos = float3(0, 0, 0);
 };
 
 #endif

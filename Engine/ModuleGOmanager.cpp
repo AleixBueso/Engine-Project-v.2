@@ -13,6 +13,7 @@
 #include "Mesh_RenderInfo.h"
 #include "ViewPort.h"
 
+#include "Firework.h"
 
 #include "AllComponents.h"
 
@@ -128,17 +129,9 @@ update_status ModuleGoManager::Update()
 		StaticChildsPopUpIsOpen = false;
 	}
 
-	//Update Fireworks
-	std::list<Firework*>::iterator it = fireworks.begin();
-	while (it != fireworks.end())
-	{
-		(*it)->Update();
-		it++;
-	}
-
 	//Create Fireworks
 	if (App->input->GetKey(SDL_SCANCODE_1) == KEY_DOWN)
-		fireworks.push_back(new Firework());
+		fireworks.CreateFirework();
 
 	return UPDATE_CONTINUE;
 }
@@ -632,6 +625,11 @@ void ModuleGoManager::RenderGOs(const viewPort & port, const std::vector<GameObj
 				}
 			}
 		}
+
+		//Update Fireworks
+		Transform* camTransform = port.camera->object->GetTransform();
+		fireworks.Update(camTransform->GetGlobalPos(), camTransform->Up());
+
 		TIMER_START("Cam culling longest");
 		bool aCamHadCulling = false;
 		//Finding all the cameras that have culling on, and collecting all the GOs we need to render

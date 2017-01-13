@@ -36,7 +36,7 @@ public:
 	bool CleanUp();
 
 	// Firework system
-	std::list<Firework*> fireworks;
+	Firework fireworks;
 
 
 	// ----------------------- GO Management ------------------------------------------------------

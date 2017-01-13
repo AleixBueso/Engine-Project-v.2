@@ -17,28 +17,47 @@
 
 // Guide: http://r3dux.org/2010/10/how-to-create-a-simple-fireworks-effect-in-opengl-and-sdl/
 
-Particle_Emitter::Particle_Emitter(GameObject* linkedTo) : Component(linkedTo, C_Particle_Emitter)
+Particle_Emitter::Particle_Emitter(GameObject* linkedTo, bool IsFirework) : Component(linkedTo, C_Particle_Emitter)
 {
 	char tmp[NAME_MAX_LEN];
 	sprintf(tmp, "Particle Emitter##%i", uid);
 	name = tmp;
+	is_firework = IsFirework;
 	gravity[0] = 0;
 	gravity[1] = 0.5f;
 	gravity[2] = 0;
+	exploded = false;
 }
 
 void Particle_Emitter::UpdateNow(const float3& point, const float3& _up)
 {
 	for (std::list<Particle*>::iterator it = particles.begin(); it != particles.end(); it++)
-	{
-		//(*it)->transform->Update();
 		(*it)->Update(point, _up);
+
+	if (is_firework)
+	{
+		if (first_particle_launch == false)
+		{
+			particles.push_back(new Particle(this));
+			first_particle_launch = true;
+		}
+
+		if (exploded && explosion_created == false)
+		{
+			uint max_particles = 20;
+			for (uint i = 0; i < max_particles; i++)
+				particles.push_back(new Particle(this));
+			explosion_created = true;
+		}
 	}
 
-	if (timer > time_to_spawn)
+	else
 	{
-		particles.push_back(new Particle(this));
-		timer = 0;
+		if (timer > time_to_spawn)
+		{
+			particles.push_back(new Particle(this));
+			timer = 0;
+		}
 	}
 
 	std::list<Particle*>::iterator it = particles.begin();
@@ -76,14 +95,14 @@ void Particle_Emitter::DrawTexture()
 
 Particle::Particle(Particle_Emitter* _emitter)
 {
-	//Randomizing values;
-	transform = new Transform(nullptr);
-	emitter = _emitter;
-	timer = 0;
-	speed = 0.1f + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (0.01f - 0.001f)));
-	max_life = 10 + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (10 - 15)));;
-	size = 1;
-	direction = float3(static_cast <float> (rand()) / static_cast <float> (RAND_MAX), static_cast <float> (rand()) / static_cast <float> (RAND_MAX), static_cast <float> (rand()) / static_cast <float> (RAND_MAX));
+		//Randomizing values;
+		transform = new Transform(nullptr);
+		emitter = _emitter;
+		timer = 0;
+		speed = 0.1f + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (0.01f - 0.001f)));
+		max_life = 10 + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (10 - 15)));
+		size = 1;
+		direction = float3(static_cast <float> (rand()) / static_cast <float> (RAND_MAX), static_cast <float> (rand()) / static_cast <float> (RAND_MAX), static_cast <float> (rand()) / static_cast <float> (RAND_MAX));
 }
 
 Particle::~Particle()
@@ -120,9 +139,26 @@ void Particle::Update(const float3& point, const float3& _up)
 	glEnable(GL_ALPHA_TEST);
 	glDisable(GL_LIGHTING);
 	glAlphaFunc(GL_GREATER, emitter->alpha);
-	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+	if(emitter->is_firework)
+		glColor4f(1.0f, 1.0f, 0.0f, 1.0f);
+	else
+		glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 	glPushMatrix();
-	glMultMatrixf(*transform->GetGlobalTransform().v);
+
+	if (!emitter->is_firework)
+	{
+		math::float4x4 final_transform = transform->GetGlobalTransform() * emitter->object->GetTransform()->GetGlobalTransform();
+		glMultMatrixf(*final_transform.v);
+	}
+
+	else
+	{
+		if (emitter->exploded)
+		{
+
+		}
+		glMultMatrixf(*transform->GetGlobalTransform().v);
+	}
 
 	//Drawing particle
 	glBegin(GL_TRIANGLES);
@@ -150,11 +186,14 @@ void Particle::Update(const float3& point, const float3& _up)
 	glEnd();
 
 	//Setting texture
-	if (emitter->object->HasComponent(Component::C_material))
+	if (emitter->object)
 	{
-		emitter->object->GetComponent<Material>().front()->GetTexture(particle_tex);
-		glBindTexture(GL_TRIANGLES, particle_tex);
-		glTexParameteri(GL_TEXTURE, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+		if (emitter->object->HasComponent(Component::C_material))
+		{
+			emitter->object->GetComponent<Material>().front()->GetTexture(particle_tex);
+			glBindTexture(GL_TRIANGLES, particle_tex);
+			glTexParameteri(GL_TEXTURE, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+		}
 	}
 
 	glDisable(GL_BLEND);
@@ -166,12 +205,26 @@ void Particle::Update(const float3& point, const float3& _up)
 
 	//Calculating directions
 	float3 dir_speed = float3(direction.x * speed + emitter->gravity[0], direction.y * speed + emitter->gravity[1], direction.z * speed + emitter->gravity[2]);
-	float3 new_position(transform->GetGlobalPos().x + dir_speed.x * Time.dt, transform->GetGlobalPos().y + dir_speed.y * Time.dt, transform->GetGlobalPos().z + dir_speed.z * Time.dt);
+
+	float3 new_position;
+
+	if(emitter->exploded)
+		new_position.Set(emitter->explosion_pos.x + transform->GetGlobalPos().x + dir_speed.x * Time.dt, emitter->explosion_pos.y + transform->GetGlobalPos().y + dir_speed.y * Time.dt, emitter->explosion_pos.z + transform->GetGlobalPos().z + dir_speed.z * Time.dt);
+	else
+		new_position.Set(transform->GetGlobalPos().x + dir_speed.x * Time.dt, transform->GetGlobalPos().y + dir_speed.y * Time.dt, transform->GetGlobalPos().z + dir_speed.z * Time.dt);
+
 	transform->SetGlobalPos(new_position);
 	transform->UpdateGlobalTransform();
 
 	if (timer > max_life)
 	{
+		if (emitter->is_firework && !emitter->exploded)
+		{
+			emitter->explosion_pos = this->transform->GetGlobalPos();
+			emitter->exploded = true;
+			emitter->gravity[1] = 0;
+		}
+
 		to_destroy = true;
 	}
 }
