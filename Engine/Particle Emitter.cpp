@@ -29,6 +29,7 @@ Particle_Emitter::Particle_Emitter(GameObject* linkedTo, bool IsFirework) : Comp
 	gravity[1] = 0.5f;
 	gravity[2] = 0;
 	exploded = false;
+	//object->GetTransform()->allowRotation = false;
 }
 
 void Particle_Emitter::UpdateNow(const float3& point, const float3& _up)
@@ -126,7 +127,13 @@ void Particle::Update(const float3& point, const float3& _up)
 	// Billboard
 	if (_up.IsZero() == false)
 	{
-		Transform* trans = transform;
+		Transform* trans;
+
+		if(emitter->is_firework)
+			trans = transform;
+		else
+			trans = emitter->object->GetTransform();
+
 		float3 front = point - trans->GetGlobalPos();
 
 		float4x4 tmp = float4x4::LookAt(localForward.Normalized(), front, localUp.Normalized(), _up);
@@ -148,6 +155,9 @@ void Particle::Update(const float3& point, const float3& _up)
 	glDisable(GL_LIGHTING);
 	glAlphaFunc(GL_GREATER, emitter->alpha);
 
+	if(!emitter->is_firework)
+		glEnable(GL_TEXTURE_2D);
+
 	// Color
 	if(emitter->is_firework)
 		glColor4f(1.0f, 1.0f, 0.0f, 1.0f);
@@ -166,6 +176,7 @@ void Particle::Update(const float3& point, const float3& _up)
 	{
 		glMultMatrixf(*transform->GetGlobalTransform().v);
 	}
+
 
 	//Drawing particle
 	glBegin(GL_TRIANGLES);
@@ -199,19 +210,23 @@ void Particle::Update(const float3& point, const float3& _up)
 		{
 			if (emitter->object->HasComponent(Component::C_material))
 			{
-				emitter->object->GetComponent<Material>().front()->GetTexture(particle_tex);
+				particle_tex = emitter->object->GetComponent<Material>().front()->GetTexture(particle_tex);
+				//glBindTexture(GL_TEXTURE_2D, particle_tex);
 				glBindTexture(GL_TRIANGLES, particle_tex);
 				glTexParameteri(GL_TEXTURE, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 			}
 		}
 	}
 
+	glDisable(GL_TEXTURE_2D);
 	glDisable(GL_BLEND);
 	glDisable(GL_ALPHA_TEST);
 	glEnable(GL_LIGHTING);
 	glPopMatrix();
 
 	timer += Time.dt;
+
+
 
 	//Calculating directions
 	float3 dir_speed = float3(direction.x * speed + emitter->gravity[0], direction.y * speed + emitter->gravity[1], direction.z * speed + emitter->gravity[2]);
