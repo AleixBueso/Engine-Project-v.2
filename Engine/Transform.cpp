@@ -89,7 +89,7 @@ void Transform::EditorContent()
 	tmp[0] = localPosition.x;
 	tmp[1] = localPosition.y;
 	tmp[2] = localPosition.z;
-	if (ImGui::DragFloat3("Position", tmp, 1.0f))
+	if (ImGui::DragFloat3("Position", tmp, 0.1f))
 	{
 		SetLocalPos(tmp[0], tmp[1], tmp[2]);
 	}

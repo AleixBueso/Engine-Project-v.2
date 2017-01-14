@@ -155,9 +155,6 @@ void Particle::Update(const float3& point, const float3& _up)
 	glDisable(GL_LIGHTING);
 	glAlphaFunc(GL_GREATER, emitter->alpha);
 
-	if(!emitter->is_firework)
-		glEnable(GL_TEXTURE_2D);
-
 	// Color
 	if(emitter->is_firework)
 		glColor4f(1.0f, 1.0f, 0.0f, 1.0f);
@@ -177,6 +174,19 @@ void Particle::Update(const float3& point, const float3& _up)
 		glMultMatrixf(*transform->GetGlobalTransform().v);
 	}
 
+	if (!emitter->is_firework)
+	{
+		//Setting texture
+		if (emitter->object)
+		{
+			if (emitter->object->HasComponent(Component::C_material))
+			{
+				particle_tex = emitter->object->GetComponent<Material>().front()->GetTexture(0);
+				glBindTexture(GL_TEXTURE_2D, particle_tex);
+				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+			}
+		}
+	}
 
 	//Drawing particle
 	glBegin(GL_TRIANGLES);
@@ -203,25 +213,12 @@ void Particle::Update(const float3& point, const float3& _up)
 
 	glEnd();
 
-	if (!emitter->is_firework)
-	{
-		//Setting texture
-		if (emitter->object)
-		{
-			if (emitter->object->HasComponent(Component::C_material))
-			{
-				particle_tex = emitter->object->GetComponent<Material>().front()->GetTexture(particle_tex);
-				//glBindTexture(GL_TEXTURE_2D, particle_tex);
-				glBindTexture(GL_TRIANGLES, particle_tex);
-				glTexParameteri(GL_TEXTURE, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-			}
-		}
-	}
 
-	glDisable(GL_TEXTURE_2D);
+
 	glDisable(GL_BLEND);
 	glDisable(GL_ALPHA_TEST);
 	glEnable(GL_LIGHTING);
+	glBindTexture(GL_TEXTURE_2D, 0);
 	glPopMatrix();
 
 	timer += Time.dt;
