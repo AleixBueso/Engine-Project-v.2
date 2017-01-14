@@ -19,6 +19,9 @@ public:
 	float size;
 	float3 direction;
 
+	//Firework Utility
+	bool position_changed = false;
+
 	bool is_firework = false;
 
 	uint particle_tex = 0;
@@ -70,6 +73,7 @@ public:
 	bool exploded = false;
 	bool explosion_created = false;
 	float3 explosion_pos = float3(0, 0, 0);
+	float3 emitter_pos = float3(0, 0, 0);
 };
 
 #endif
