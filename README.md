@@ -69,6 +69,17 @@ imported other files, try to add it back and refresh.
    limitations under the License.
 
 ## ADITIONAL INFO (ASIGNMENT 3)
+
+As I couldn't repair the motor to work properly saving/loading scenes does not work properly, i prepared an special scene so that it doesn't crash. 
+To load the scene click on Load Scene option and type "Assignment". 
+Three emitters should appear. On those, at the component Material, just select the texture you want to work with (recomended smoke). 
+Blending and alpha are already prepared. 
+Press "1" to fire a randomized Firework.
+
+# TUTORIAL VIDEOS
+
+link: https://drive.google.com/open?id=0B9SRT_gp33sHUmU5M3FlbmI3NFk
+
 As I couldn't repair the motor to work properly saving/loading scenes does not work properly, i prepared an special scene so that it doesn't crash.
 To load the scene click on Load Scene option and type "Assignment".
 Three emitters should appear. On those, at the component Material, just select the texture you want to work with (recomended smoke).
