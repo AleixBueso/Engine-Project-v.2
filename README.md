@@ -7,6 +7,8 @@ This has been created for learning purposes, during 2016 at the CITM university.
 Source code can be found at:        
 https://github.com/AleixBueso/EngineProject_v.2/
 
+You can find out more on the [Web](https://aleixbueso.github.io/EngineProject_v.2/)!
+
 ## Usage
 
 Drag and drop any 3d file into the engine viewport to load it. Note that only files located inside the "Assets" folder will be handled.
@@ -76,12 +78,6 @@ Three emitters should appear. On those, at the component Material, just select t
 Blending and alpha are already prepared. 
 Press "1" to fire a randomized Firework.
 
-# TUTORIAL VIDEOS
+### TUTORIAL VIDEOS
 
-link: https://drive.google.com/open?id=0B9SRT_gp33sHUmU5M3FlbmI3NFk
-
-As I couldn't repair the motor to work properly saving/loading scenes does not work properly, i prepared an special scene so that it doesn't crash.
-To load the scene click on Load Scene option and type "Assignment".
-Three emitters should appear. On those, at the component Material, just select the texture you want to work with (recomended smoke).
-Blending and alpha are already prepared.
-Press "1" to fire a randomized Firework.
+[link to all videos](https://drive.google.com/open?id=0B9SRT_gp33sHUmU5M3FlbmI3NFk)
