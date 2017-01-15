@@ -210,10 +210,10 @@ void GameObject::DrawOnEditor()
 		}
 	}
 
-	/*for (std::vector<Component*>::iterator it = components.begin(); it != components.end(); it++)
+	for (std::vector<Component*>::iterator it = components.begin(); it != components.end(); it++)
 	{
 		(*it)->DrawOnEditor();
-	}*/
+	}
 }
 
 void GameObject::DrawLocator()

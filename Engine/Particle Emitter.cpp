@@ -119,7 +119,7 @@ Particle::Particle(Particle_Emitter* _emitter)
 
 Particle::~Particle()
 {
-	delete[] transform;
+	//delete[] transform;
 }
 
 void Particle::Update(const float3& point, const float3& _up)
@@ -128,11 +128,7 @@ void Particle::Update(const float3& point, const float3& _up)
 	if (_up.IsZero() == false)
 	{
 		Transform* trans;
-
-		if(emitter->is_firework)
-			trans = transform;
-		else
-			trans = emitter->object->GetTransform();
+		trans = transform;
 
 		float3 front = point - trans->GetGlobalPos();
 
@@ -250,6 +246,6 @@ void Particle::Update(const float3& point, const float3& _up)
 			emitter->emitter_pos = this->transform->GetGlobalPos();
 			emitter->exploded = true;
 		}
-			to_destroy = true;
+		to_destroy = true;
 	}
 }
