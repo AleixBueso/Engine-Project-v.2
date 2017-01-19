@@ -81,3 +81,7 @@ Press "1" to fire a randomized Firework.
 ### TUTORIAL VIDEOS
 
 [link to all videos](https://drive.google.com/open?id=0B9SRT_gp33sHUmU5M3FlbmI3NFk)
+[Fireworks](https://youtu.be/ygSx58NHNpA)
+[Load Scene](https://youtu.be/Zq3aY2mX5GY)
+[Adding Texture](https://youtu.be/i4ywFXY9owg)
+[Particle Emitter Creation](https://youtu.be/3Uj3NwF6MZE)
